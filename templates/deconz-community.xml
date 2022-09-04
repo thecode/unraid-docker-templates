@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>deCONZ-Community</Name>
+  <Repository>deconzcommunity/deconz:stable</Repository>
+  <Registry>https://hub.docker.com/r/deconzcommunity/deconz</Registry>
+  <Network>br0</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Project>https://www.phoscon.de/en/conbee2/</Project>
+  <Overview>This Docker image containerizes the deCONZ software from Dresden Elektronik, which controls a ZigBee network using a Conbee USB or RaspBee GPIO serial interface. This image runs deCONZ in "minimal" mode, for control of the ZigBee network via the WebUIs ("Wireless Light Control" and "Phoscon") and over the REST API and Websockets, and optionally runs a VNC server for viewing and interacting with the ZigBee mesh through the deCONZ UI.&#xD;
+&#xD;
+This template uses a custom ip - network type custom br:0 - (alternatively, you can use host and change the web ports)&#xD;&#xD;
+If you are migrating an existing marthoc/deconz install to deconzcommunity/deconz, Make sure you have the latest backup from the Phoscon.&#xD;&#xD;
+Enable advanced options to show more settings</Overview>
+  <Category>HomeAutomation:</Category>
+  <WebUI>http://[IP]:[PORT:80]/</WebUI>
+  <TemplateURL/>
+  <Icon>https://raw.githubusercontent.com//thecode/unraid-docker-templates/main/icons/deconz-community.png</Icon>
+  <ExtraParams/>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled>1662318796</DateInstalled>
+  <DonateText/>
+  <DonateLink/>
+  <Requires/>
+  <Config Name="appdata" Target="/opt/deCONZ" Default="" Mode="rw" Description="" Type="Path" Display="always" Required="false" Mask="false">/mnt/user/appdata/deconz</Config>
+  <Config Name="Conbee USB Port" Target="" Default="" Mode="" Description="Path to Conbee USB device, It is recommended to use serial by id:&#13;&#10;/dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_[SN]-if00:/dev/ttyACM0" Type="Device" Display="always" Required="false" Mask="false">/dev/ttyACM0</Config>
+  <Config Name="deCONZ Device" Target="DECONZ_DEVICE" Default="" Mode="" Description="Set same as device, if you forward a device by id, you don't need to change this" Type="Variable" Display="always" Required="false" Mask="false">/dev/ttyACM0</Config>
+  <Config Name="Time Zone" Target="TZ" Default="" Mode="" Description="Set the local time zone so deCONZ has the correct time" Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="VNC Mode Enable/Disable" Target="DECONZ_VNC_MODE" Default="0|1" Mode="" Description="Set this option to enable VNC access to the container to view the deCONZ ZigBee mesh: 1=Enable, 0=Disable" Type="Variable" Display="always" Required="false" Mask="false">0</Config>
+  <Config Name="VNC Port" Target="DECONZ_VNC_PORT" Default="" Mode="" Description="Port for VNC mode access to deCONZ application" Type="Variable" Display="always" Required="false" Mask="false">5900</Config>
+  <Config Name="VNC password" Target="DECONZ_VNC_PASSWORD" Default="" Mode="" Description="Default password for VNC mode is 'changeme', Make sure to change the default password if VNC is enabled" Type="Variable" Display="always" Required="false" Mask="true">changeme</Config>
+  <Config Name="noVNC Port" Target="DECONZ_NOVNC_PORT" Default="6080" Mode="" Description="Port for web access to view the deCONZ ZigBee mesh using noVNC, setting the port to `0` will disable the noVNC functionality" Type="Variable" Display="always" Required="false" Mask="false">6080</Config>
+  <Config Name="Web Port" Target="DECONZ_WEB_PORT" Default="" Mode="" Description="Phoscon web UI port" Type="Variable" Display="advanced" Required="false" Mask="false">80</Config>
+  <Config Name="Websockets Service" Target="DECONZ_WS_PORT" Default="" Mode="" Description="Websockets service port" Type="Variable" Display="advanced" Required="false" Mask="false">443</Config>
+  <Config Name="Debug Info" Target="DEBUG_INFO" Default="1" Mode="" Description="Sets the level of the deCONZ command-line flag --dbg-info" Type="Variable" Display="advanced" Required="false" Mask="false">1</Config>
+  <Config Name="Debug APS" Target="DEBUG_APS" Default="0" Mode="" Description="Sets the level of the deCONZ command-line flag --dbg-aps" Type="Variable" Display="advanced" Required="false" Mask="false">0</Config>
+  <Config Name="Debug ZCL" Target="DEBUG_ZCL" Default="0" Mode="" Description="Sets the level of the deCONZ command-line flag --dbg-zcl" Type="Variable" Display="advanced" Required="false" Mask="false">0</Config>
+  <Config Name="Debug ZDP" Target="DEBUG_ZDP" Default=" 0" Mode="" Description="Sets the level of the deCONZ command-line flag --dbg-zdp" Type="Variable" Display="advanced" Required="false" Mask="false">0</Config>
+  <Config Name="DEBUG DDF" Target="DEBUG_DDF" Default="0" Mode="" Description="Sets the level of the deCONZ command-line flag --dbg-ddf" Type="Variable" Display="advanced" Required="false" Mask="false">0</Config>
+  <Config Name="Debug DEV" Target="DEBUG_DEV" Default="0" Mode="" Description="Sets the level of the deCONZ command-line flag --dbg-dev" Type="Variable" Display="advanced" Required="false" Mask="false">0</Config>
+  <Config Name="Debug OTA" Target="DEBUG_OTA" Default="0" Mode="" Description="Sets the level of the deCONZ command-line flag --dbg-ota" Type="Variable" Display="advanced" Required="false" Mask="false">0</Config>
+  <Config Name="Debug Error" Target="DEBUG_ERROR" Default="0" Mode="" Description="Sets the level of the deCONZ command-line flag --dbg-error" Type="Variable" Display="advanced" Required="false" Mask="false">0</Config>
+  <Config Name="Debug HTTP" Target="DEBUG_HTTP" Default="0" Mode="" Description="Sets the level of the deCONZ command-line flag --dbg-http" Type="Variable" Display="advanced" Required="false" Mask="false">0</Config>
+  <Config Name="uPNP Enable/Disable" Target="DECONZ_UPNP" Default="1|0" Mode="" Description="Enable uPNP: 1=Enable, 0=Disable" Type="Variable" Display="advanced" Required="false" Mask="false">1</Config>
+  <Config Name="deCONZ Start Verbose" Target="DECONZ_START_VERBOSE" Default="" Mode="" Description="Set this option to 0 to disable verbose of start script, set to 1 to enable `set -x` logging" Type="Variable" Display="advanced" Required="false" Mask="false">0</Config>
+</Container>
