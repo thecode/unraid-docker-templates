@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Maintainer>
+  <Icon>https://raw.githubusercontent.com/thecode/unraid-docker-templates/main/icons/thecode.jpg</Icon>
+  <Profile>
+    I like to contribute to projects that I use in order to make them better
+  </Profile>
+  <DonateLink>https://paypal.me/levyshay</DonateLink>
+  <DonateText>If you like my work please consider Donating.</DonateText>
+  <WebPage>https://github.com/thecode</WebPage>
+  <Facebook>https://www.facebook.com/levyshay/</Facebook>
+  <Discord>https://discordapp.com/users/713107876390109225/</Discord>
+  <Twitter>https://twitter.com/intent/follow?screen_name=le1vyshay</Twitter>  
+</Maintainer>
