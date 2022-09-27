@@ -22,8 +22,8 @@ Enable advanced options to show more settings</Overview>
   <PostArgs/>
   <CPUset/>
   <DateInstalled>1662318796</DateInstalled>
-  <DonateText/>
-  <DonateLink/>
+  <DonateText>If you like my work please consider Donating.</DonateText>
+  <DonateLink>https://paypal.me/levyshay</DonateLink>
   <Requires/>
   <Config Name="appdata" Target="/opt/deCONZ" Default="" Mode="rw" Description="" Type="Path" Display="always" Required="false" Mask="false">/mnt/user/appdata/deconz</Config>
   <Config Name="Conbee USB Port" Target="" Default="" Mode="" Description="Path to Conbee USB device, It is recommended to use serial by id:&#13;&#10;/dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_[SN]-if00:/dev/ttyACM0" Type="Device" Display="always" Required="false" Mask="false">/dev/ttyACM0</Config>
