@@ -12,36 +12,33 @@
   <Project>https://github.com/thecode/berthward</Project>
   <ReadMe>https://github.com/thecode/berthward#readme</ReadMe>
   <License>MIT</License>
-  <Overview>**For experienced Unraid users only. Careful: this app can do serious damage to your server if you don't know what you're doing.**
+  <Overview>**Run your Unraid server from Discord, and let it watch itself.**
 
-Berthward is a caretaker for your Unraid server, powered by Claude. It runs Claude Code in a container set up as a server administrator, not as a coding tool: you ask it things or give it jobs from Discord, a web terminal or the Claude app, and it watches the server with scheduled checks. It is meant to ask before it changes anything; that only holds as long as you read the requests before you approve them.
+**Chat on Discord.** Message your own private bot: "why won't Plex start?", "what is filling the cache?", "set up a container for X". Claude knows your pools, shares, containers and VMs and does the digging. Before it changes anything, the exact command arrives on your phone with Allow and Deny buttons.
 
-**What it does**
-- Discord: message your own private bot to ask about the server or have something done. Anything outside the read-only list comes back as a request showing the exact command, with Allow and Deny buttons.
-- Monitoring tasks: small scripts or questions for Claude that run on a schedule and post to Discord only when there is something to report. A new or changed task runs only after you approve its content. Two examples are included (pool and array health, a daily digest).
-- Web terminal (optional): the Claude session in your browser. Each sign-in is approved by you on Discord, or by a long password if you do not use Discord.
-- Claude app: the same session from your phone through Remote Control.
-- Knows your server: on every start it scans storage (ZFS, btrfs, array), containers, VMs, plugins, User Scripts and network and writes them down for Claude.
-- Guard rails: read-only commands run freely, Claude writes only in its own folder without asking, risky commands always ask with a reason, and disk formatting and wipes are blocked outright. The boot drive is read-only by default and no shares are mounted.
+**Tasks that keep watch.** Tell it "check every 15 minutes that all pools are healthy" or "send me a summary every morning". Claude writes the check, you approve it once, and it runs on schedule. It only speaks up on Discord when something needs you.
 
-**Requirements**
-- An Anthropic account: a claude.ai subscription (also needed for Remote Control) or a Console API key.
-- For Discord chat, alerts and tasks: your own Discord bot (free, a few minutes to create; one bot per server). The guide walks through it.
+**Also**
+- **Nothing changes without your tap.** Looking around is free. Everything else waits for Allow, and disk formatting and wipes are blocked outright.
+- **Reach it other ways too.** A web terminal in your browser, or the Claude app on your phone.
+- **It knows your server.** Every start it maps storage (ZFS, btrfs, array), containers, VMs, plugins and User Scripts.
+- **Your secrets stay out of reach.** Key and password files are refused, and container settings are shown with their secrets hidden.
+
+**For experienced Unraid users.** The container holds the Docker socket, which is root-equivalent access to your server. The guard rails reduce accidents; they are not a security boundary. If you would not do the same work yourself on the command line, do not install this. Read every request before you approve it, and keep backups.
+
+**You need**
+- An Anthropic account: a claude.ai subscription or a Console API key.
+- For Discord: your own bot, free and a few minutes to create. The guide walks you through it.
 
 **Setup**
-1. Apply this template with the default mounts (adjust the two appdata paths if yours is not /mnt/user/appdata). For Discord, fill in the bot token, your Discord user ID and a channel ID.
-2. Turn Autostart on for the container.
-3. Log in to Claude once: send /login to your bot on Discord and follow the link, or open the container's Console and log in there.
-4. Say hello in your Discord channel, and approve the example tasks when the bot asks.
-Full walkthrough: https://github.com/thecode/berthward/blob/main/docs/getting-started.md
+1. Apply this template, with your bot token, your Discord user ID and a channel ID.
+2. Turn Autostart on.
+3. Send /login to your bot and follow the link.
+4. Say hello, and approve the example tasks when it asks.
 
-**Beta**
-Tried on two Unraid 7.4 servers with ZFS pools and a small XFS array, not on a range of setups. It is an AI agent: its rules shape what it does, they do not guarantee it.
+Full guide: https://github.com/thecode/berthward/blob/main/docs/getting-started.md
 
-**Warning**
-The Docker socket gives this container root-equivalent access to your server, and whoever controls your Discord account can approve what it does: use two-factor authentication there. The guard rails reduce accidents but are not a security boundary. If you would not do the same work yourself on the Unraid command line, do not install this. Read every request before approving it. Keep backups. The authors accept no liability for data loss or misconfiguration.
-
-Berthward is an independent project based on claude-unraid-manager by mygrexit. It is not affiliated with or endorsed by Anthropic.</Overview>
+Beta: tried on two Unraid 7.4 servers. It is an AI agent, so its rules shape what it does and do not guarantee it. Independent project based on claude-unraid-manager by mygrexit; not affiliated with or endorsed by Anthropic.</Overview>
   <Changes>
 ### 0.1.0-beta.2
 - Web terminal: new optional field Web Terminal Host Names. With a list, the page answers only under those names and plain addresses. An unanswered sign-in now says so instead of "denied".
@@ -71,7 +68,7 @@ Berthward is an independent project based on claude-unraid-manager by mygrexit. 
   <Config Name="Remote Control Name" Target="REMOTE_CONTROL_NAME" Default="" Mode="" Description="Session name shown in the Claude app for phone/tablet access. Empty = container hostname, 'off' = disabled." Type="Variable" Display="always" Required="false" Mask="false"></Config>
   <Config Name="Anthropic API Key" Target="ANTHROPIC_API_KEY" Default="" Mode="" Description="Optional. Leave empty to log in with a claude.ai subscription (send /login to the bot on Discord, or use the terminal; required for Remote Control). Set it to bill usage to a Claude Console API key instead." Type="Variable" Display="always" Required="false" Mask="true"></Config>
   <Config Name="Discord Bot Token" Target="DISCORD_BOT_TOKEN" Default="" Mode="" Description="Optional. Token of your own Discord bot (Developer Portal → Bot → Reset Token; enable Message Content Intent). Turns on the Discord bridge: message Claude from Discord and approve or deny its permission prompts with buttons. Use one bot per server. Empty = Discord off." Type="Variable" Display="always" Required="false" Mask="true"></Config>
-  <Config Name="Discord Allowed Users" Target="DISCORD_ALLOWED_USERS" Default="" Mode="" Description="Required with a bot token. Your Discord user ID (digits; Developer Mode → right-click your avatar → Copy User ID). Several IDs: comma-separated. Only these users can talk to Claude and answer its permission prompts; everyone else is ignored." Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="Discord Allowed Users" Target="DISCORD_ALLOWED_USERS" Default="" Mode="" Description="Required with a bot token. Your Discord user ID (digits; Developer Mode → right-click your avatar → Copy User ID). Several IDs: comma-separated. Only these users can talk to Claude and answer its permission prompts; everyone else is ignored. Use two-factor authentication on these Discord accounts: whoever controls one can approve what Claude does." Type="Variable" Display="always" Required="false" Mask="false"></Config>
   <Config Name="Discord Channels" Target="DISCORD_CHANNELS" Default="" Mode="" Description="Optional. Channel IDs (digits, comma-separated) of server channels Claude listens in, for the allowed users only. Empty = direct messages only." Type="Variable" Display="always" Required="false" Mask="false"></Config>
   <Config Name="Discord Require Mention" Target="DISCORD_REQUIRE_MENTION" Default="false" Mode="" Description="In server channels: false = Claude reads every message from the allowed users, true = only when @mentioned." Type="Variable" Display="advanced" Required="false" Mask="false">false</Config>
   <Config Name="Discord Alert Channel" Target="DISCORD_ALERT_CHANNEL" Default="" Mode="" Description="Optional. Channel ID where monitoring tasks post alerts, reports and approval requests. Empty = the first channel in Discord Channels, or a direct message to the first allowed user." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
