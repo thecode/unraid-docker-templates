@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>berthward</Name>
+  <Repository>ghcr.io/thecode/berthward:beta</Repository>
+  <Beta>true</Beta>
+  <Registry>https://github.com/thecode/berthward/pkgs/container/berthward</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>bash</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/thecode/berthward/issues</Support>
+  <Project>https://github.com/thecode/berthward</Project>
+  <ReadMe>https://github.com/thecode/berthward#readme</ReadMe>
+  <License>MIT</License>
+  <Overview>**For experienced Unraid users only. Careful: this app can do serious damage to your server if you don't know what you're doing.**
+
+Berthward is a caretaker for your Unraid server, powered by Claude. It runs Claude Code in a container set up as a server administrator, not as a coding tool: you ask it things or give it jobs from Discord, a web terminal or the Claude app, and it watches the server with scheduled checks. It is meant to ask before it changes anything; that only holds as long as you read the requests before you approve them.
+
+**What it does**
+- Discord: message your own private bot to ask about the server or have something done. Anything outside the read-only list comes back as a request showing the exact command, with Allow and Deny buttons.
+- Monitoring tasks: small scripts or questions for Claude that run on a schedule and post to Discord only when there is something to report. A new or changed task runs only after you approve its content. Two examples are included (pool and array health, a daily digest).
+- Web terminal (optional): the Claude session in your browser. Each sign-in is approved by you on Discord, or by a long password if you do not use Discord.
+- Claude app: the same session from your phone through Remote Control.
+- Knows your server: on every start it scans storage (ZFS, btrfs, array), containers, VMs, plugins, User Scripts and network and writes them down for Claude.
+- Guard rails: read-only commands run freely, Claude writes only in its own folder without asking, risky commands always ask with a reason, and disk formatting and wipes are blocked outright. The boot drive is read-only by default and no shares are mounted.
+
+**Requirements**
+- An Anthropic account: a claude.ai subscription (also needed for Remote Control) or a Console API key.
+- For Discord chat, alerts and tasks: your own Discord bot (free, a few minutes to create; one bot per server). The guide walks through it.
+
+**Setup**
+1. Apply this template with the default mounts (adjust the two appdata paths if yours is not /mnt/user/appdata). For Discord, fill in the bot token, your Discord user ID and a channel ID.
+2. Turn Autostart on for the container.
+3. Log in to Claude once: send /login to your bot on Discord and follow the link, or open the container's Console and log in there.
+4. Say hello in your Discord channel, and approve the example tasks when the bot asks.
+Full walkthrough: https://github.com/thecode/berthward/blob/main/docs/getting-started.md
+
+**Beta**
+Tried on two Unraid 7.4 servers with ZFS pools and a small XFS array, not on a range of setups. It is an AI agent: its rules shape what it does, they do not guarantee it.
+
+**Warning**
+The Docker socket gives this container root-equivalent access to your server, and whoever controls your Discord account can approve what it does: use two-factor authentication there. The guard rails reduce accidents but are not a security boundary. If you would not do the same work yourself on the Unraid command line, do not install this. Read every request before approving it. Keep backups. The authors accept no liability for data loss or misconfiguration.
+
+Berthward is an independent project based on claude-unraid-manager by mygrexit. It is not affiliated with or endorsed by Anthropic.</Overview>
+  <Changes>
+### 0.1.0-beta.2
+- Web terminal: new optional field Web Terminal Host Names. With a list, the page answers only under those names and plain addresses. An unanswered sign-in now says so instead of "denied".
+- Reading another process's environment asks first, like other places that can show the bot token.
+- Names from the server can no longer change the structure of Claude's instructions file.
+- The bridge's local endpoints accept requests only from the job that is being answered.
+- A slash command used in another bot's channel now says which bot it is and where it answers.
+
+### 0.1.0-beta.1
+- First version of Berthward, based on claude-unraid-manager 0.1.0-beta.8.
+- Discord bridge with Allow / Deny buttons, scheduled monitoring tasks with approval, web terminal with Discord-approved sign-in, login from Discord, bridge-only mode.
+</Changes>
+  <Category>Tools:System</Category>
+  <WebUI>http://[IP]:[PORT:7682]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/thecode/unraid-docker-templates/main/templates/berthward.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/thecode/berthward/main/icon.png</Icon>
+  <ExtraParams>--hostname berthward</ExtraParams>
+  <DonateText/>
+  <DonateLink/>
+  <Requires>An Anthropic account (claude.ai subscription or Console API key) and access to the Docker socket. Optional: your own Discord bot for chat, alerts and tasks. For experienced Unraid users only.</Requires>
+  <Config Name="Data (login, settings, history)" Target="/root" Default="/mnt/user/appdata/berthward/home" Mode="rw" Description="Persisted home directory. Holds .claude/ (settings, history) and .claude.json (login). Must survive container rebuilds. Tip: a cache-only (exclusive) appdata share avoids FUSE overhead for the many small history writes." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/berthward/home</Config>
+  <Config Name="Workspace" Target="/workspace" Default="/mnt/user/appdata/berthward/workspace" Mode="rw" Description="Working directory. CLAUDE.md is auto-generated here on every start." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/berthward/workspace</Config>
+  <Config Name="Docker Socket" Target="/var/run/docker.sock" Default="/var/run/docker.sock" Mode="rw" Description="Required for container management and host command execution. Without it Claude cannot manage containers or run host commands." Type="Path" Display="always" Required="true" Mask="false">/var/run/docker.sock</Config>
+  <Config Name="Unraid Boot Config" Target="/host/boot" Default="/boot" Mode="ro" Description="Read-only: view plugins, templates, share configs, startup script. The flash drive is then read-only for Claude everywhere, host commands included. Change to rw to let Claude modify Unraid configuration; commands touching the flash drive should then ask first." Type="Path" Display="always" Required="false" Mask="false">/boot</Config>
+  <Config Name="Timezone" Target="TZ" Default="UTC" Mode="" Description="Your timezone (e.g. America/New_York, Europe/Berlin)." Type="Variable" Display="always" Required="false" Mask="false">UTC</Config>
+  <Config Name="Language" Target="CLAUDE_LANG" Default="" Mode="" Description="Response language (e.g. de, fr, es, nl). Empty = English." Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="Remote Control Name" Target="REMOTE_CONTROL_NAME" Default="" Mode="" Description="Session name shown in the Claude app for phone/tablet access. Empty = container hostname, 'off' = disabled." Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="Anthropic API Key" Target="ANTHROPIC_API_KEY" Default="" Mode="" Description="Optional. Leave empty to log in with a claude.ai subscription (send /login to the bot on Discord, or use the terminal; required for Remote Control). Set it to bill usage to a Claude Console API key instead." Type="Variable" Display="always" Required="false" Mask="true"></Config>
+  <Config Name="Discord Bot Token" Target="DISCORD_BOT_TOKEN" Default="" Mode="" Description="Optional. Token of your own Discord bot (Developer Portal → Bot → Reset Token; enable Message Content Intent). Turns on the Discord bridge: message Claude from Discord and approve or deny its permission prompts with buttons. Use one bot per server. Empty = Discord off." Type="Variable" Display="always" Required="false" Mask="true"></Config>
+  <Config Name="Discord Allowed Users" Target="DISCORD_ALLOWED_USERS" Default="" Mode="" Description="Required with a bot token. Your Discord user ID (digits; Developer Mode → right-click your avatar → Copy User ID). Several IDs: comma-separated. Only these users can talk to Claude and answer its permission prompts; everyone else is ignored." Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="Discord Channels" Target="DISCORD_CHANNELS" Default="" Mode="" Description="Optional. Channel IDs (digits, comma-separated) of server channels Claude listens in, for the allowed users only. Empty = direct messages only." Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="Discord Require Mention" Target="DISCORD_REQUIRE_MENTION" Default="false" Mode="" Description="In server channels: false = Claude reads every message from the allowed users, true = only when @mentioned." Type="Variable" Display="advanced" Required="false" Mask="false">false</Config>
+  <Config Name="Discord Alert Channel" Target="DISCORD_ALERT_CHANNEL" Default="" Mode="" Description="Optional. Channel ID where monitoring tasks post alerts, reports and approval requests. Empty = the first channel in Discord Channels, or a direct message to the first allowed user." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="Discord Approval Timeout" Target="BRIDGE_APPROVAL_TIMEOUT" Default="600" Mode="" Description="Seconds a permission prompt waits on Discord before it counts as denied." Type="Variable" Display="advanced" Required="false" Mask="false">600</Config>
+  <Config Name="Discord Job Time Limit (minutes)" Target="BRIDGE_RUN_TIMEOUT" Default="60" Mode="" Description="The longest one job started from Discord may run before it is stopped and you are told. 0 = no limit. /stop ends a job at any time." Type="Variable" Display="advanced" Required="false" Mask="false">60</Config>
+  <Config Name="Discord Model" Target="BRIDGE_MODEL" Default="" Mode="" Description="Optional. Model for Discord conversations (alias such as sonnet or opus, or a full model name). Empty = your Claude Code default." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="Web Terminal" Target="WEB_TERMINAL" Default="false" Mode="" Description="true = serve the interactive Claude session as a terminal in the browser (links and paste work). Also set the Web Terminal Port below. With the Discord bridge, every sign-in is approved by you on Discord. Without it, set a Web Terminal Password of 12 characters or more; that password is then the only protection. Plain HTTP, like Unraid's own web UI by default: use it on a trusted LAN or behind a TLS reverse proxy." Type="Variable" Display="always" Required="false" Mask="false">false</Config>
+  <Config Name="Web Terminal Port" Target="7682" Default="" Mode="tcp" Description="Host port for the web terminal, e.g. 7682. Empty = not published." Type="Port" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="Web Terminal Password" Target="WEB_PASSWORD" Default="" Mode="" Description="With the Discord bridge: optional, asked before the sign-in request is sent to Discord. Without the Discord bridge: required, at least 12 characters, and the only protection of the web terminal; five wrong tries lock an address out for 15 minutes." Type="Variable" Display="always" Required="false" Mask="true"></Config>
+  <Config Name="Web Terminal Stay Signed In (hours)" Target="WEB_SESSION_HOURS" Default="12" Mode="" Description="How long a browser stays signed in to the web terminal after you approve it on Discord. 0 = never stay signed in: the sign-in ends about two minutes after the page is closed, and every new visit needs a new approval. Any other number is hours (decimals allowed), at most 168 (one week). A container restart always signs everyone out." Type="Variable" Display="always" Required="false" Mask="false">12</Config>
+  <Config Name="Web Terminal Behind Proxy" Target="WEB_TRUST_PROXY" Default="false" Mode="" Description="true = a reverse proxy is in front of the web terminal: the browser's address, host name and https are taken from the proxy's X-Forwarded headers. Only set this when nothing but the proxy can reach the port, because any client can send those headers." Type="Variable" Display="always" Required="false" Mask="false">false</Config>
+  <Config Name="Web Terminal Host Names" Target="WEB_ALLOWED_HOSTS" Default="" Mode="" Description="Optional. The host names you open the web terminal under, separated by commas, e.g. claude.example.com. With a list, the page answers only under these names and under plain IP addresses; a request under any other name is refused. Empty = any name is served, and a sign-in request that arrives under a public name is marked on Discord. Set it when the page is reachable under a public domain." Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  <Config Name="Web Terminal Location Lookup" Target="WEB_GEO_LOOKUP" Default="false" Mode="" Description="true = the sign-in request on Discord also shows an approximate location for public addresses. The address is sent to an outside service (ipapi.co) for this on each sign-in attempt; addresses on your own network are never sent." Type="Variable" Display="always" Required="false" Mask="false">false</Config>
+  <Config Name="Interactive Session" Target="INTERACTIVE_SESSION" Default="true" Mode="" Description="true = keep the interactive Claude session running (Console button, Remote Control from the Claude app, web terminal). false = Discord bridge only; log in with /login on Discord." Type="Variable" Display="always" Required="false" Mask="false">true</Config>
+  <Config Name="Resume Conversation" Target="CONTINUE" Default="true" Mode="" Description="Resume the last conversation on start. Set to false to always start fresh." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
+  <Config Name="tmux Session Name" Target="TMUX_SESSION" Default="main" Mode="" Description="Name of the persistent tmux session." Type="Variable" Display="advanced" Required="false" Mask="false">main</Config>
+  <Config Name="Host Helper Image" Target="HOST_HELPER_IMAGE" Default="alpine:3.21" Mode="" Description="Image used for the short-lived helper container that runs host commands. Only change this if you mirror images locally." Type="Variable" Display="advanced" Required="false" Mask="false">alpine:3.21</Config>
+  <Config Name="Container App Data (optional)" Target="/appdata" Default="" Mode="ro" Description="Optional. Set to your appdata share (e.g. /mnt/user/appdata) so Claude can read other containers' configs and logs. Leave empty if not needed. Read-only recommended." Type="Path" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="Example: a share for Claude (optional)" Target="/media" Default="" Mode="ro" Description="Just an example, leave it empty if you don't need it. Set it to one share Claude may look at, e.g. /mnt/user/Media. Claude only sees shares that are mounted; it will tell you how to add one when it matters. For more shares use 'Add another Path' with any container path you like (outside /root). Read-only unless Claude should change files." Type="Path" Display="advanced" Required="false" Mask="false"></Config>
+</Container>
