@@ -40,6 +40,9 @@ Full guide: https://github.com/thecode/berthward/blob/main/docs/getting-started.
 
 Beta: tried on two Unraid 7.4 servers. It is an AI agent, so its rules shape what it does and do not guarantee it. Independent project based on claude-unraid-manager by mygrexit; not affiliated with or endorsed by Anthropic.</Overview>
   <Changes>
+### 0.1.0-beta.6
+- Start the host helper from Berthward's own image
+
 ### 0.1.0-beta.5
 - Do not report a task's script as missing while the task is still being written
 
@@ -56,10 +59,6 @@ Beta: tried on two Unraid 7.4 servers. It is an AI agent, so its rules shape wha
 - Names from the server can no longer change the structure of Claude's instructions file.
 - The bridge's local endpoints accept requests only from the job that is being answered.
 - A slash command used in another bot's channel now says which bot it is and where it answers.
-
-### 0.1.0-beta.1
-- First version of Berthward, based on claude-unraid-manager 0.1.0-beta.8.
-- Discord bridge with Allow / Deny buttons, scheduled monitoring tasks with approval, web terminal with Discord-approved sign-in, login from Discord, bridge-only mode.
 </Changes>
   <Category>Tools:System</Category>
   <WebUI>http://[IP]:[PORT:7682]/</WebUI>
@@ -95,7 +94,6 @@ Beta: tried on two Unraid 7.4 servers. It is an AI agent, so its rules shape wha
   <Config Name="Interactive Session" Target="INTERACTIVE_SESSION" Default="true" Mode="" Description="true = keep the interactive Claude session running (Console button, Remote Control from the Claude app, web terminal). false = Discord bridge only; log in with /login on Discord." Type="Variable" Display="always" Required="false" Mask="false">true</Config>
   <Config Name="Resume Conversation" Target="CONTINUE" Default="true" Mode="" Description="Resume the last conversation on start. Set to false to always start fresh." Type="Variable" Display="advanced" Required="false" Mask="false">true</Config>
   <Config Name="tmux Session Name" Target="TMUX_SESSION" Default="main" Mode="" Description="Name of the persistent tmux session." Type="Variable" Display="advanced" Required="false" Mask="false">main</Config>
-  <Config Name="Host Helper Image" Target="HOST_HELPER_IMAGE" Default="alpine:3.21" Mode="" Description="Image used for the short-lived helper container that runs host commands. Only change this if you mirror images locally." Type="Variable" Display="advanced" Required="false" Mask="false">alpine:3.21</Config>
   <Config Name="Container App Data (optional)" Target="/appdata" Default="" Mode="ro" Description="Optional. Set to your appdata share (e.g. /mnt/user/appdata) so Claude can read other containers' configs and logs. Leave empty if not needed. Read-only recommended." Type="Path" Display="advanced" Required="false" Mask="false"></Config>
   <Config Name="Example: a share for Claude (optional)" Target="/media" Default="" Mode="ro" Description="Just an example, leave it empty if you don't need it. Set it to one share Claude may look at, e.g. /mnt/user/Media. Claude only sees shares that are mounted; it will tell you how to add one when it matters. For more shares use 'Add another Path' with any container path you like (outside /root). Read-only unless Claude should change files." Type="Path" Display="advanced" Required="false" Mask="false"></Config>
 </Container>
