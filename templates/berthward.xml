@@ -40,6 +40,9 @@ Full guide: https://github.com/thecode/berthward/blob/main/docs/getting-started.
 
 Beta: tried on two Unraid 7.4 servers. It is an AI agent, so its rules shape what it does and do not guarantee it. Independent project based on claude-unraid-manager by mygrexit; not affiliated with or endorsed by Anthropic.</Overview>
   <Changes>
+### 0.1.0-beta.9
+- Let a script task colour its output on Discord
+
 ### 0.1.0-beta.8
 - Pass arguments from /run to a script task
 - Add a disk-health example task, written in Python
@@ -52,10 +55,6 @@ Beta: tried on two Unraid 7.4 servers. It is an AI agent, so its rules shape wha
 
 ### 0.1.0-beta.5
 - Do not report a task's script as missing while the task is still being written
-
-### 0.1.0-beta.4
-- Let a short ping to an IP address run without asking
-- Add network tools to the image: ping, traceroute, dig, nslookup, nc, ip, ss
 </Changes>
   <Category>Tools:System</Category>
   <WebUI>http://[IP]:[PORT:7682]/</WebUI>
